@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Angular
+.angular/
+dist/
+tmp/
+out-tsc/
+bazel-out/
+coverage/
+
+# IDEs and Editors
+.vscode/
+.idea/
+.project
+.classpath
+.settings/
+*.launch
+*.sublime-workspace
+*.sublime-project
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Other
+/client/dist
+/client/.angular
+/client/node_modules
+/server/node_modules

@@ -1,0 +1,41 @@
+<div class="app-shell">
+  <!-- ── Top Navigation Bar ────────────────────────────────── -->
+  <mat-toolbar class="top-toolbar">
+    <div class="toolbar-inner">
+      <!-- Brand -->
+      <div class="navbar-brand" routerLink="/">
+        <mat-icon class="spinning-logo">data_usage</mat-icon>
+        <span class="navbar-title">{{ appName }}</span>
+      </div>
+
+      <!-- Nav links -->
+      <nav class="nav-links">
+        <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          Home
+        </a>
+        <a class="nav-link" routerLink="/sheets" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}">
+          Sheets
+        </a>
+      </nav>
+
+      <span class="spacer"></span>
+
+      <!-- Actions -->
+      <div class="nav-actions">
+        <button mat-icon-button (click)="toggleTheme()" [matTooltip]="isDarkTheme() ? 'Light mode' : 'Dark mode'">
+          <mat-icon>{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Account">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- ── Page Content ─────────────────────────────────────── -->
+  <main class="content">
+    <div class="content-inner">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

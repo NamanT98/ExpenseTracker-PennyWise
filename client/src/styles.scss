@@ -1,0 +1,123 @@
+// Custom Theming for Angular Material
+@use '@angular/material' as mat;
+@include mat.core();
+
+// Typography — Poppins
+$custom-typography: mat.define-typography-config(
+  $font-family: 'Poppins, "Helvetica Neue", sans-serif'
+);
+
+// Coral primary palette
+$coral-palette: (
+  50: #feece8, 100: #fdcfc5, 200: #fbaf9e, 300: #f98e77,
+  400: #f77659, 500: #f65e3c, 600: #f55636, 700: #f34c2e,
+  800: #f14227, 900: #ef311a,
+  A100: #ffffff, A200: #ffd8d4, A400: #ffaca1, A700: #ff9587,
+  contrast: (
+    50: #000, 100: #000, 200: #000, 300: #000, 400: #fff,
+    500: #fff, 600: #fff, 700: #fff, 800: #fff, 900: #fff,
+    A100: #000, A200: #000, A400: #000, A700: #000,
+  )
+);
+
+$expense-tracker-primary: mat.define-palette($coral-palette, 500);
+$expense-tracker-accent:  mat.define-palette(mat.$teal-palette, A200);
+$expense-tracker-warn:    mat.define-palette(mat.$red-palette);
+
+// ── DARK THEME (default) ──────────────────────────────────────────────────────
+$dark-theme: mat.define-dark-theme((
+  color: (primary: $expense-tracker-primary, accent: $expense-tracker-accent, warn: $expense-tracker-warn),
+  typography: $custom-typography,
+  density: -2
+));
+@include mat.all-component-themes($dark-theme);
+
+// ── LIGHT THEME CLASS ─────────────────────────────────────────────────────────
+$light-theme: mat.define-light-theme((
+  color: (primary: $expense-tracker-primary, accent: $expense-tracker-accent, warn: $expense-tracker-warn),
+  typography: $custom-typography,
+  density: -2
+));
+.light-theme {
+  @include mat.all-component-colors($light-theme);
+}
+
+// ── CSS VARIABLES (Dark defaults) ─────────────────────────────────────────────
+:root {
+  --bg-base:       #1e1e1e;
+  --bg-surface:    #262626;
+  --bg-surface-2:  #2f2f2f;
+  --bg-hover:      #333333;
+  --border:        rgba(255,255,255,0.07);
+  --text-primary:  #f0f0f0;
+  --text-secondary:#9a9a9a;
+  --text-muted:    #666666;
+  --coral:         #f65e3c;
+  --coral-bg:      rgba(246, 94, 60, 0.12);
+  --mint:          #9cbea6;
+  --mint-bg:       rgba(156, 190, 166, 0.12);
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.35);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.35);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.4);
+  --radius-sm:     8px;
+  --radius-md:     12px;
+  --radius-lg:     16px;
+  --sidebar-w:     260px;
+}
+
+.light-theme {
+  --bg-base:       #f5f5f5;
+  --bg-surface:    #ffffff;
+  --bg-surface-2:  #f0f0f0;
+  --bg-hover:      #fafafa;
+  --border:        rgba(0,0,0,0.08);
+  --text-primary:  #1a1a1a;
+  --text-secondary:#666666;
+  --text-muted:    #aaaaaa;
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.1);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.12);
+}
+
+// ── GLOBAL RESET & BASE ───────────────────────────────────────────────────────
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Poppins, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ── UTILITY ───────────────────────────────────────────────────────────────────
+.spacer { flex: 1 1 auto; }
+.color-coral { color: var(--coral) !important; }
+.bg-coral    { background-color: var(--coral) !important; color: #fff !important; }
+.color-mint  { color: var(--mint) !important; }
+.bg-mint     { background-color: var(--mint) !important; color: #1e1e1e !important; }
+
+// ── GLOBAL ICON BUTTON FIX ────────────────────────────────────────────────────
+// Forces mat-icon inside icon buttons to be perfectly centered
+button[mat-icon-button] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  .mat-mdc-button-persistent-ripple,
+  .mat-ripple {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  mat-icon {
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}

@@ -1,0 +1,109 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ── Top Toolbar ──────────────────────────────────────── */
+.top-toolbar {
+  background-color: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border);
+  box-shadow: none !important;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  height: 64px !important;
+  padding: 0 !important;  // inner div handles padding
+}
+
+.toolbar-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 32px;
+  height: 100%;
+  gap: 32px;
+}
+
+/* ── Brand ────────────────────────────────────────────── */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+
+  .spinning-logo {
+    animation: spin 5s linear infinite;
+    color: var(--coral);
+    font-size: 28px;
+    height: 28px;
+    width: 28px;
+  }
+
+  .navbar-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Nav Links ────────────────────────────────────────── */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+
+  &.active {
+    background: var(--coral-bg);
+    color: var(--coral);
+    font-weight: 600;
+  }
+}
+
+/* ── Actions ──────────────────────────────────────────── */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.spacer { flex: 1; }
+
+/* ── Content ──────────────────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--bg-base);
+}
+
+.content-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+  min-height: 100%;
+}

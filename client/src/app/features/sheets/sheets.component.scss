@@ -1,0 +1,208 @@
+.sheets-container {
+  padding: 32px 0;
+}
+
+/* ── Summary Bar ─────────────────────────────────────── */
+.summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+
+  .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  margin: 0 24px;
+}
+
+.spacer-inline { flex: 1; }
+
+.add-button {
+  background-color: var(--coral) !important;
+  color: #fff !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ── Sheets Grid ─────────────────────────────────────── */
+.sheets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.sheet-card {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(246, 94, 60, 0.35);
+
+    .edit-btn { opacity: 1; }
+    .card-accent-bar { transform: scaleX(1); }
+    .chevron { transform: translateX(4px); }
+  }
+}
+
+.card-accent-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--coral), var(--mint));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.edit-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 2;
+  color: var(--text-secondary) !important;
+  width: 32px !important;
+  height: 32px !important;
+
+  mat-icon { font-size: 18px; height: 18px; width: 18px; }
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 20px 12px;
+
+  .sheet-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-sm);
+    background: var(--coral);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon { color: #fff; }
+  }
+
+  .card-info {
+    .sheet-name {
+      margin: 0 0 3px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .sheet-date {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+  }
+}
+
+.card-totals {
+  display: flex;
+  gap: 0;
+  padding: 0 20px 16px;
+  
+  .total-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    
+    .total-icon {
+      font-size: 20px;
+      height: 20px;
+      width: 20px;
+    }
+    
+    .total-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+    
+    .total-lbl {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+  }
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+
+  .tx-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .chevron {
+    color: var(--text-muted);
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    transition: transform 0.2s;
+  }
+}
+
+/* ── Empty State ─────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  text-align: center;
+  color: var(--text-secondary);
+  gap: 12px;
+
+  .empty-icon {
+    font-size: 56px;
+    height: 56px;
+    width: 56px;
+    color: var(--text-muted);
+  }
+
+  h3 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
+  p  { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
+}

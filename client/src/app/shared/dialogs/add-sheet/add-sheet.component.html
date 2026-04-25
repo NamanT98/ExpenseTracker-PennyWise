@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Create New' }} Expense Sheet</h2>
+<mat-dialog-content>
+  <p *ngIf="!isEditMode">Please enter a name for your new expense sheet.</p>
+  <p *ngIf="isEditMode">Edit the name of your expense sheet.</p>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Sheet Name</mat-label>
+    <input matInput [(ngModel)]="sheetName" placeholder="e.g. Monthly Groceries" (keyup.enter)="onSave()" autofocus>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!sheetName.trim()" (click)="onSave()">{{ isEditMode ? 'Save' : 'Create' }}</button>
+</mat-dialog-actions>

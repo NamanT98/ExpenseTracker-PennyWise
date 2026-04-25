@@ -1,0 +1,79 @@
+<div class="sheets-container">
+
+  <!-- Summary bar -->
+  <div class="summary-bar">
+    <div class="stat-item">
+      <span class="stat-value">{{ sheets().length }}</span>
+      <span class="stat-label">Sheets</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value color-mint">{{ totalReceived() | currency }}</span>
+      <span class="stat-label">Total Received</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value color-coral">{{ totalSent() | currency }}</span>
+      <span class="stat-label">Total Spent</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value" [class.color-mint]="totalReceived() - totalSent() >= 0" [class.color-coral]="totalReceived() - totalSent() < 0">
+        {{ (totalReceived() - totalSent()) | currency }}
+      </span>
+      <span class="stat-label">Net Balance</span>
+    </div>
+    <span class="spacer-inline"></span>
+    <button mat-flat-button class="add-button" (click)="openAddSheetDialog()">
+      <mat-icon>add</mat-icon> New Sheet
+    </button>
+  </div>
+
+  <!-- Grid -->
+  <div class="sheets-grid" *ngIf="sheets().length > 0">
+    <div class="sheet-card" *ngFor="let sheet of sheets()" [routerLink]="['/sheets', sheet.id]">
+      <div class="card-accent-bar"></div>
+      <button mat-icon-button class="edit-btn" (click)="editSheet(sheet, $event)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <div class="card-top">
+        <div class="sheet-avatar">
+          <mat-icon>receipt_long</mat-icon>
+        </div>
+        <div class="card-info">
+          <h3 class="sheet-name">{{ sheet.name }}</h3>
+          <span class="sheet-date">Created {{ sheet.createdAt | date:'MMM d, y' }}</span>
+        </div>
+      </div>
+      <div class="card-totals" *ngIf="sheetTotals().get(sheet.id) as totals">
+        <div class="total-block">
+          <mat-icon class="total-icon color-mint">arrow_downward</mat-icon>
+          <div>
+            <div class="total-value color-mint">{{ totals.received | currency }}</div>
+            <div class="total-lbl">Received</div>
+          </div>
+        </div>
+        <div class="total-block">
+          <mat-icon class="total-icon color-coral">arrow_upward</mat-icon>
+          <div>
+            <div class="total-value color-coral">{{ totals.sent | currency }}</div>
+            <div class="total-lbl">Spent</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="tx-count">{{ txCount().get(sheet.id) || 0 }} transactions</span>
+        <mat-icon class="chevron">chevron_right</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="sheets().length === 0" class="empty-state">
+    <mat-icon class="empty-icon">note_add</mat-icon>
+    <h3>No expense sheets yet</h3>
+    <p>Create your first sheet to start tracking.</p>
+    <button mat-flat-button class="add-button" (click)="openAddSheetDialog()">
+      <mat-icon>add</mat-icon> Create Sheet
+    </button>
+  </div>
+</div>

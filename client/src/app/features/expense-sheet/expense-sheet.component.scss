@@ -1,0 +1,326 @@
+.sheet-container {
+  padding: 32px 0;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.15s;
+    text-decoration: none;
+    flex-shrink: 0;
+    // Use grid instead of flex — guarantees true centering with anchor tags
+    display: grid;
+    place-items: center;
+    &:hover { background: var(--bg-hover); }
+    mat-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+      // Offset for the arrow_back_ios icon which is visually off-center
+      padding-left: 4px;
+    }
+  }
+
+  .sheet-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .sheet-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+}
+
+.add-fab {
+  background-color: var(--coral) !important;
+  color: #fff !important;
+  border-radius: var(--radius-sm) !important;
+  font-weight: 600;
+  gap: 4px;
+}
+
+/* ── Stats Row ───────────────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
+
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-val {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .stat-lbl {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  &.received .stat-icon {
+    background: var(--mint-bg);
+    mat-icon { color: var(--mint); }
+  }
+  &.received .stat-val { color: var(--mint); }
+
+  &.sent .stat-icon {
+    background: var(--coral-bg);
+    mat-icon { color: var(--coral); }
+  }
+  &.sent .stat-val { color: var(--coral); }
+
+  &.balance {
+    .stat-icon { background: rgba(255,255,255,0.05); mat-icon { color: var(--text-secondary); } }
+    &.positive .stat-val { color: var(--mint); }
+    &.negative .stat-val { color: var(--coral); }
+  }
+}
+
+/* ── Pill Filters ────────────────────────────────────── */
+.filters-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.pill-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+
+  .filter-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-right: 4px;
+    min-width: 70px;
+  }
+}
+
+.filter-pill {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: var(--coral);
+    color: var(--coral);
+  }
+
+  &.active {
+    background: var(--coral-bg);
+    border-color: var(--coral);
+    color: var(--coral);
+    font-weight: 600;
+  }
+}
+
+/* ── Day Groups ──────────────────────────────────────── */
+.tx-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.day-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+
+  .day-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1;
+    min-width: 44px;
+  }
+
+  .day-meta {
+    display: flex;
+    flex-direction: column;
+
+    .day-name {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--coral);
+      font-weight: 600;
+    }
+
+    .day-full {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  }
+}
+
+/* ── Transaction Card ────────────────────────────────── */
+.tx-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow 0.2s, border-color 0.2s;
+
+  &:hover {
+    box-shadow: var(--shadow-sm);
+    border-color: rgba(246, 94, 60, 0.2);
+    .edit-btn { opacity: 1; }
+  }
+}
+
+.tx-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+}
+
+.tx-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tx-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.cat-food              { background: rgba(245,124,0,0.15); mat-icon { color: #ffa726; } }
+  &.cat-travel            { background: rgba(2,136,209,0.15); mat-icon { color: #29b6f6; } }
+  &.cat-fashion           { background: rgba(194,24,91,0.15); mat-icon { color: #ec407a; } }
+  &.cat-electricity-bills { background: rgba(251,192,45,0.15); mat-icon { color: #ffee58; } }
+  &.cat-rent              { background: rgba(56,142,60,0.15); mat-icon { color: #66bb6a; } }
+  &.cat-miscellaneous     { background: rgba(123,31,162,0.15); mat-icon { color: #ab47bc; } }
+}
+
+.tx-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  .tx-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+  .tx-meta  { font-size: 0.78rem; color: var(--text-secondary); }
+  .tx-summary { font-size: 0.78rem; color: var(--text-muted); font-style: italic; }
+}
+
+.tx-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .edit-btn {
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: var(--text-muted) !important;
+    width: 30px !important;
+    height: 30px !important;
+    line-height: 30px !important;
+    mat-icon { font-size: 17px; height: 17px; width: 17px; line-height: 17px; }
+  }
+
+  .tx-amount-wrap {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    .tx-arrow { font-size: 16px; height: 16px; width: 16px; }
+  }
+
+  .tx-amount {
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  &.income {
+    color: var(--mint);
+    .tx-amount-wrap { color: var(--mint); }
+  }
+  &.expense {
+    color: var(--coral);
+    .tx-amount-wrap { color: var(--coral); }
+  }
+}
+
+/* ── Empty State ─────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  text-align: center;
+  gap: 12px;
+  color: var(--text-secondary);
+
+  .empty-icon { font-size: 64px; height: 64px; width: 64px; color: var(--text-muted); }
+  h3 { margin: 0; font-size: 1.2rem; font-weight: 600; color: var(--text-primary); }
+  p  { margin: 0; font-size: 0.9rem; }
+}

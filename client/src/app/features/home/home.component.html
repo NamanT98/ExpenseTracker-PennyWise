@@ -1,0 +1,154 @@
+<div class="home-page">
+
+  <!-- ── Hero Section ─────────────────────────────────────── -->
+  <section class="hero-section">
+    <div class="hero-text-side">
+      <h1 class="hero-headline">
+        Manage Your<br>
+        Expenses Easily<br>
+        With <span class="color-coral">{{ appName }}</span>
+      </h1>
+      <p class="hero-subtext">
+        Track every rupee, dollar, or euro across multiple sheets. Filter by date, category, and more — all in one clean interface.
+      </p>
+      <div class="hero-actions">
+        <button mat-flat-button class="get-started-btn" routerLink="/sheets">
+          Get Started <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-visual-side">
+      <div class="mockup-card expenses-card bg-mint">
+        <span class="card-label">Total Expenses</span>
+        <div class="card-value">$ 1,220.00 <span class="card-badge">-10%</span></div>
+        <div class="card-subtext">This month</div>
+      </div>
+      <div class="mockup-card revenue-card bg-coral">
+        <span class="card-label">Total Revenue</span>
+        <div class="card-value">$ 8,675.00 <span class="card-badge">+36%</span></div>
+        <div class="card-subtext">This month</div>
+      </div>
+      <div class="mockup-card transactions-card">
+        <h3>Latest Transactions</h3>
+        <div class="mockup-tx">
+          <div class="tx-icon bg-mint"><mat-icon>receipt</mat-icon></div>
+          <div class="tx-info">
+            <span class="tx-title">Income: Salary Oct</span>
+            <span class="tx-sub">Successfully</span>
+          </div>
+          <span class="tx-amount color-mint">+$1200</span>
+        </div>
+        <div class="mockup-tx">
+          <div class="tx-icon bg-coral"><mat-icon>bolt</mat-icon></div>
+          <div class="tx-info">
+            <span class="tx-title">Electric Bill</span>
+            <span class="tx-sub">Successfully</span>
+          </div>
+          <span class="tx-amount color-coral">-$480</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features Section ─────────────────────────────────── -->
+  <section class="features-section">
+    <div class="section-header">
+      <span class="section-label">What we offer</span>
+      <h2 class="section-title">Everything you need to manage money</h2>
+      <p class="section-subtitle">Simple, powerful tools designed around how you actually spend.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>receipt_long</mat-icon></div>
+        <h3>Multiple Sheets</h3>
+        <p>Organize finances into separate sheets — personal, work, or travel. Each sheet is independent with its own transactions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>filter_alt</mat-icon></div>
+        <h3>Smart Filtering</h3>
+        <p>Filter transactions by date range or category instantly using pill-style controls. No page reloads, just real-time results.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>account_balance_wallet</mat-icon></div>
+        <h3>Live Balance</h3>
+        <p>See your total received, total spent, and net balance at a glance right on the sheet dashboard — always up to date.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>category</mat-icon></div>
+        <h3>Rich Categories</h3>
+        <p>Categorize expenses as Food, Travel, Fashion, Electricity, Rent, or Miscellaneous. Color-coded icons make it visual.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>dark_mode</mat-icon></div>
+        <h3>Dark &amp; Light Mode</h3>
+        <p>Switch between a sleek dark theme and a clean light mode with one click. Your preference is saved automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon-wrap"><mat-icon>edit_note</mat-icon></div>
+        <h3>Inline Editing</h3>
+        <p>Hover over any sheet or transaction to reveal an edit button. Update details without leaving the current page.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Testimonials (auto-scrolling marquee) ────────────── -->
+  <section class="testimonials-section">
+    <div class="section-header">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-title">Trusted by people who care about money</h2>
+    </div>
+    <div class="marquee-wrapper">
+      <div class="marquee-track">
+        <!-- First copy -->
+        @for (t of testimonials; track t.name) {
+          <div class="testimonial-card">
+            <div class="author">
+              <div class="avatar">{{ t.avatar }}</div>
+              <div class="author-info"><strong>{{ t.name }}</strong><span>{{ t.title }}</span></div>
+            </div>
+            <div class="stars">{{ t.stars }}</div>
+            <p class="quote">{{ t.quote }}</p>
+          </div>
+        }
+        <!-- Duplicate copy for seamless loop -->
+        @for (t of testimonials; track t.name) {
+          <div class="testimonial-card">
+            <div class="author">
+              <div class="avatar">{{ t.avatar }}</div>
+              <div class="author-info"><strong>{{ t.name }}</strong><span>{{ t.title }}</span></div>
+            </div>
+            <div class="stars">{{ t.stars }}</div>
+            <p class="quote">{{ t.quote }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA Section ───────────────────────────────────────── -->
+  <section class="cta-section">
+    <div class="cta-box">
+      <h2 class="cta-title">Ready to take control of your finances?</h2>
+      <p class="cta-sub">Start tracking in seconds. No sign-up required.</p>
+      <button mat-flat-button class="get-started-btn" routerLink="/sheets">
+        Open My Sheets <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <mat-icon class="footer-logo">data_usage</mat-icon>
+        <span class="footer-name">{{ appName }}</span>
+      </div>
+      <p class="footer-copy">
+        Built with ❤️ by <strong>Naman</strong> &nbsp;·&nbsp; &copy; {{ currentYear }} {{ appName }}. All rights reserved.
+      </p>
+      <p class="footer-tech">Made with Angular &amp; Angular Material</p>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,16 @@
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+  gap: 16px;
+}
+
+.type-group {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
