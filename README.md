@@ -28,6 +28,37 @@ PennyWise is a modern, responsive, and feature-rich expense tracking application
 - **Responsive Design**: Fully optimized for various screen sizes.
 - **Rich Aesthetics**: Uses Poppins typography and a harmonious coral-based color palette.
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="screenshots/home.png" width="800" alt="Home Page">
+  <br>
+  <em>Home Page - Modern Landing Design</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/sheets.png" width="800" alt="Sheets Overview">
+  <br>
+  <em>Sheets Overview - Manage multiple expense sheets</em>
+</p>
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="screenshots/expense_sheet_dark.png" width="400" alt="Dark Mode">
+        <br>
+        <em>Dark Mode</em>
+      </td>
+      <td align="center">
+        <img src="screenshots/expense_sheet_light.png" width="400" alt="Light Mode">
+        <br>
+        <em>Light Mode</em>
+      </td>
+    </tr>
+  </table>
+</div>
+
 ## 🛠️ Tech Stack
 - **Frontend**: Angular 17, Angular Material, SCSS.
 - **Icons**: Material Icons.
