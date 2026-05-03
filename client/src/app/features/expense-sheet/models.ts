@@ -1,4 +1,4 @@
-export type TransactionCategory = 'food' | 'travel' | 'fashion' | 'electricity bills' | 'rent' | 'miscellaneous';
+export type TransactionCategory = string;
 export type TransactionType = 'SENT' | 'RECEIVED';
 
 export interface Transaction {
@@ -15,7 +15,7 @@ export interface Transaction {
 export type CreateTransaction = Omit<Transaction, 'id' | 'date'>;
 export type UpdateTransaction = Partial<Omit<Transaction, 'id' | 'date' | 'sheetId'>>;
 
-export type DateRange = 'all' |'7days' | '1week' | '1month' | '3months' | '6months';
+export type DateRange = 'all' | 'this_week' | 'last_week' | '4weeks' | '12weeks' | 'this_month' | '1month' | '3months' | '6months' | 'this_year' | 'last_year' | '3years';
 
 export interface DayGroup {
   dateLabel: string;

@@ -1,6 +1,6 @@
 <div class="sheet-container">
 
-  <!-- ── Header ───────────────────────────────────────────── -->
+  <!-- ── Header ───────────────────────────────────────────────────────────── -->
   <div class="sheet-header">
     <div class="header-left">
       <a class="back-btn" routerLink="/sheets">
@@ -16,7 +16,7 @@
     </button>
   </div>
 
-  <!-- ── Summary Stats ────────────────────────────────────── -->
+  <!-- ── Summary Stats ────────────────────────────────────────────────────── -->
   <div class="stats-row">
     <div class="stat-card received">
       <div class="stat-icon"><mat-icon>arrow_downward</mat-icon></div>
@@ -41,70 +41,121 @@
     </div>
   </div>
 
-  <!-- ── Pill Filters ─────────────────────────────────────── -->
-  <div class="filters-row">
+  <!-- ── Global Sheet Filters ────────────────────────────────────────────────── -->
+  <div class="filters-row global-filters">
     <div class="pill-group">
       <span class="filter-label">Period:</span>
-      <button *ngFor="let r of dateRanges"
-        class="filter-pill" [class.active]="selectedRange() === r.value"
-        (click)="onDateRangeChange(r.value)">{{ r.label }}</button>
-    </div>
-    <div class="pill-group">
-      <span class="filter-label">Category:</span>
-      <button class="filter-pill" [class.active]="selectedCategory() === 'all'"
-        (click)="onCategoryChange('all')">All</button>
-      <button *ngFor="let cat of categories"
-        class="filter-pill" [class.active]="selectedCategory() === cat"
-        (click)="onCategoryChange(cat)">{{ cat | titlecase }}</button>
+      <button mat-button class="filter-pill active dropdown-trigger" [matMenuTriggerFor]="periodMenu">
+        {{ getSelectedRangeLabel() }} <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #periodMenu="matMenu" class="custom-menu">
+        <button mat-menu-item *ngFor="let r of dateRanges()"
+          [class.active-item]="selectedRange() === r.value"
+          (click)="onDateRangeChange(r.value)">
+          {{ r.label }}
+        </button>
+      </mat-menu>
     </div>
   </div>
 
-  <!-- ── Transaction List grouped by date ─────────────────── -->
-  <div class="tx-list" *ngIf="groupedTransactions().length > 0">
-    <div class="day-group" *ngFor="let group of groupedTransactions()">
-      <!-- Date header — Money Lover style -->
-      <div class="day-header">
-        <div class="day-number">{{ group.dayOfMonth }}</div>
-        <div class="day-meta">
-          <span class="day-name">{{ group.dayOfWeek }}</span>
-          <span class="day-full">{{ group.dateLabel | date:'MMMM y' }}</span>
+  <!-- ── Two-Tab Layout ──────────────────────────────────────────────────── -->
+  <mat-tab-group class="sheet-tabs" animationDuration="250ms" dynamicHeight>
+
+    <!-- ══ Tab 1: Transactions ══════════════════════════════════════════════ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">receipt_long</mat-icon>
+        Transactions
+      </ng-template>
+
+      <!-- Pill Filters (Category only for Transactions tab) -->
+      <div class="filters-row">
+        <div class="pill-group">
+          <span class="filter-label">Category:</span>
+          <button class="filter-pill" [class.active]="selectedCategory() === 'all'"
+            (click)="onCategoryChange('all')">All</button>
+          <button *ngFor="let cat of categories()"
+            class="filter-pill" [class.active]="selectedCategory() === cat"
+            (click)="onCategoryChange(cat)">{{ cat | titlecase }}</button>
         </div>
       </div>
 
-      <!-- Transactions for this day -->
-      <div class="tx-card" *ngFor="let t of group.transactions">
-        <div class="tx-inner">
-          <div class="tx-left">
-            <div class="tx-icon cat-{{ t.category.replace(' ', '-') }}">
-              <mat-icon>{{ getCategoryIcon(t.category) }}</mat-icon>
-            </div>
-            <div class="tx-details">
-              <span class="tx-title">{{ t.title }}</span>
-              <span class="tx-meta">{{ t.category | titlecase }} · {{ t.date | date:'h:mm a' }}</span>
-              <span class="tx-summary" *ngIf="t.summary">{{ t.summary }}</span>
+      <!-- Transaction List grouped by date -->
+      <div class="tx-list" *ngIf="groupedTransactions().length > 0">
+        <div class="day-group" *ngFor="let group of groupedTransactions()">
+          <!-- Date header -->
+          <div class="day-header">
+            <div class="day-number">{{ group.dayOfMonth }}</div>
+            <div class="day-meta">
+              <span class="day-name">{{ group.dayOfWeek }}</span>
+              <span class="day-full">{{ group.dateLabel | date:'MMMM y' }}</span>
             </div>
           </div>
-          <div class="tx-right" [class.income]="t.type === 'RECEIVED'" [class.expense]="t.type === 'SENT'">
-            <button mat-icon-button class="edit-btn" (click)="editTransaction(t, $event)" matTooltip="Edit">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <div class="tx-amount-wrap">
-              <mat-icon class="tx-arrow">{{ t.type === 'RECEIVED' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
-              <span class="tx-amount">{{ t.amount | currency }}</span>
+
+          <!-- Transactions grid for this day -->
+          <div class="tx-grid">
+            <div class="tx-card" *ngFor="let t of group.transactions">
+              <div class="tx-inner">
+                <div class="tx-left">
+                  <div class="tx-icon cat-{{ t.category.replace(' ', '-') }}">
+                    <mat-icon>{{ getCategoryIcon(t.category) }}</mat-icon>
+                  </div>
+                  <div class="tx-details">
+                    <span class="tx-title">{{ t.title }}</span>
+                    <span class="tx-meta">{{ t.category | titlecase }} · {{ t.date | date:'h:mm a' }}</span>
+                    <span class="tx-summary" *ngIf="t.summary">{{ t.summary }}</span>
+                  </div>
+                </div>
+                <div class="tx-right" [class.income]="t.type === 'RECEIVED'" [class.expense]="t.type === 'SENT'">
+                  <div class="tx-amount-wrap">
+                    <mat-icon class="tx-arrow">{{ t.type === 'RECEIVED' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+                    <span class="tx-amount">{{ t.amount | currency }}</span>
+                  </div>
+                  <div class="tx-actions">
+                    <button mat-icon-button class="action-btn edit-btn" (click)="editTransaction(t, $event)" matTooltip="Edit">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button class="action-btn delete-btn" (click)="deleteTransaction(t, $event)" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Empty State -->
-  <div class="empty-state" *ngIf="groupedTransactions().length === 0">
-    <mat-icon class="empty-icon">receipt_long</mat-icon>
-    <h3>No transactions found</h3>
-    <p>Try adjusting the filters or add a new transaction.</p>
-    <button mat-flat-button class="add-fab" (click)="openAddTransactionDialog()">
-      <mat-icon>add</mat-icon> Add Expense
-    </button>
-  </div>
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="groupedTransactions().length === 0">
+        <mat-icon class="empty-icon">receipt_long</mat-icon>
+        <h3>No transactions found</h3>
+        <p>Try adjusting the filters or add a new transaction.</p>
+        <button mat-flat-button class="add-fab" (click)="openAddTransactionDialog()">
+          <mat-icon>add</mat-icon> Add Expense
+        </button>
+      </div>
+
+    </mat-tab>
+
+    <!-- ══ Tab 2: Analysis ══════════════════════════════════════════════════ -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">insights</mat-icon>
+        Analysis
+      </ng-template>
+
+      <div class="analysis-tab-body">
+        <app-analysis
+          [transactions]="allTransactions()"
+          [budget]="sheetBudget()"
+          [period]="selectedRange()"
+          [sheetCreatedAt]="sheetCreatedAt()">
+        </app-analysis>
+      </div>
+
+    </mat-tab>
+
+  </mat-tab-group>
+
 </div>

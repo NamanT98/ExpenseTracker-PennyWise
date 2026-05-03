@@ -5,10 +5,50 @@
   gap: 16px;
 }
 
-.type-group {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
+.type-toggle-group {
+  width: 100%;
+  border-radius: 10px !important;
+  overflow: hidden;
+  border: 1px solid var(--border) !important;
+
+  mat-button-toggle {
+    flex: 1;
+    height: 48px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--text-secondary);
+    background: var(--bg-surface);
+    border: none !important;
+    transition: background 0.2s, color 0.2s;
+
+    .mat-button-toggle-label-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      line-height: 48px;
+      padding: 0 20px;
+    }
+
+    mat-icon {
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+    }
+  }
+
+  // Expense (SENT) selected state
+  .toggle-sent.mat-button-toggle-checked {
+    background: rgba(246, 94, 60, 0.12) !important;
+    color: var(--coral) !important;
+  }
+
+  // Income (RECEIVED) selected state
+  .toggle-received.mat-button-toggle-checked {
+    background: rgba(72, 199, 142, 0.12) !important;
+    color: var(--mint) !important;
+  }
 }
 
 .full-width {

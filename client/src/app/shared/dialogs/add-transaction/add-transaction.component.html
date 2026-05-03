@@ -1,11 +1,17 @@
 <h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Add' }} Transaction</h2>
 <mat-dialog-content>
   <form [formGroup]="transactionForm" class="transaction-form">
-    
-    <mat-radio-group formControlName="type" class="type-group">
-      <mat-radio-button value="SENT">Sent (Expense)</mat-radio-button>
-      <mat-radio-button value="RECEIVED">Received (Income)</mat-radio-button>
-    </mat-radio-group>
+
+    <mat-button-toggle-group formControlName="type" class="type-toggle-group" aria-label="Transaction Type">
+      <mat-button-toggle value="SENT" class="toggle-sent">
+        <mat-icon>arrow_upward</mat-icon>
+        Expense
+      </mat-button-toggle>
+      <mat-button-toggle value="RECEIVED" class="toggle-received">
+        <mat-icon>arrow_downward</mat-icon>
+        Income
+      </mat-button-toggle>
+    </mat-button-toggle-group>
 
     <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
       <mat-label>Title</mat-label>
@@ -18,14 +24,30 @@
       <span matTextPrefix>$&nbsp;</span>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
-      <mat-label>Category</mat-label>
-      <mat-select formControlName="category">
-        <mat-option *ngFor="let cat of categories" [value]="cat">
-          {{ cat | titlecase }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="category-field-row">
+      <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic" *ngIf="!showNewCategoryInput">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          <mat-option *ngFor="let cat of categories" [value]="cat">
+            {{ cat | titlecase }}
+          </mat-option>
+          <mat-option value="NEW_CATEGORY">
+            <mat-icon>add</mat-icon> Create New Category
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic" *ngIf="showNewCategoryInput">
+        <mat-label>New Category Name</mat-label>
+        <input matInput [formControl]="newCategoryControl" placeholder="e.g. Subscriptions">
+        <button mat-icon-button matSuffix type="button" (click)="addNewCategory($event)">
+          <mat-icon>check</mat-icon>
+        </button>
+        <button mat-icon-button matSuffix type="button" (click)="toggleNewCategory()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
 
     <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
       <mat-label>Summary (Optional)</mat-label>
@@ -38,3 +60,4 @@
   <button mat-button (click)="onCancel()">Cancel</button>
   <button mat-raised-button color="primary" [disabled]="!transactionForm.valid" (click)="onSave()">{{ isEditMode ? 'Save' : 'Add' }}</button>
 </mat-dialog-actions>
+

@@ -1,0 +1,171 @@
+<div class="analysis-container">
+
+  <!-- ── Summary Cards ──────────────────────────────────── -->
+  <div class="summary-grid">
+    <div class="summary-card spent">
+      <div class="summary-icon"><mat-icon>arrow_upward</mat-icon></div>
+      <div>
+        <div class="summary-val">{{ totalSpent | currency }}</div>
+        <div class="summary-lbl">Total Spent</div>
+      </div>
+    </div>
+    <div class="summary-card received">
+      <div class="summary-icon"><mat-icon>arrow_downward</mat-icon></div>
+      <div>
+        <div class="summary-val">{{ totalReceived | currency }}</div>
+        <div class="summary-lbl">Total Received</div>
+      </div>
+    </div>
+    <div class="summary-card balance" [class.positive]="netBalance >= 0" [class.negative]="netBalance < 0">
+      <div class="summary-icon"><mat-icon>account_balance_wallet</mat-icon></div>
+      <div>
+        <div class="summary-val">{{ netBalance | currency }}</div>
+        <div class="summary-lbl">Net Balance</div>
+      </div>
+    </div>
+    <ng-container *ngIf="budget">
+      <div class="summary-card budget-card" [class.over]="isBudgetOver" [class.near]="isBudgetNear">
+        <div class="summary-icon"><mat-icon>savings</mat-icon></div>
+        <div>
+          <div class="summary-val">{{ scaledGlobalLimit | currency }}</div>
+          <div class="summary-lbl">{{ getBudgetPeriodLabel() }} Budget</div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- ── Budget Health Bar ──────────────────────────────── -->
+  <ng-container *ngIf="budget">
+    <div class="section-card budget-health">
+      <div class="section-header">
+        <span class="section-title">
+          <mat-icon>monitor_heart</mat-icon>
+          Budget Health
+        </span>
+        <span class="health-status"
+          [class.ok]="!isBudgetOver && !isBudgetNear"
+          [class.warn]="isBudgetNear"
+          [class.over]="isBudgetOver">
+          <mat-icon>{{ isBudgetOver ? 'error' : isBudgetNear ? 'warning' : 'check_circle' }}</mat-icon>
+          {{ isBudgetOver ? 'Over Budget' : isBudgetNear ? 'Near Limit' : 'On Track' }}
+        </span>
+      </div>
+      <div class="health-amounts">
+        <span class="spent-label" [class.over]="isBudgetOver">
+          {{ totalSpent | currency }} spent
+        </span>
+        <span class="limit-label">of {{ scaledGlobalLimit | currency }}</span>
+      </div>
+      <div class="health-bar-bg">
+        <div class="health-bar-fill"
+          [style.width.%]="budgetPercent"
+          [class.warn]="isBudgetNear"
+          [class.over]="isBudgetOver">
+        </div>
+      </div>
+      <div class="health-footer">
+        <span *ngIf="!isBudgetOver">{{ scaledGlobalLimit - totalSpent | currency }} remaining</span>
+        <span *ngIf="isBudgetOver" class="over-msg">
+          <mat-icon>warning</mat-icon>
+          Exceeded by {{ totalSpent - scaledGlobalLimit | currency }}
+        </span>
+        <span class="pct-badge" [class.over]="isBudgetOver" [class.warn]="isBudgetNear">
+          {{ budgetPercent.toFixed(0) }}%
+        </span>
+      </div>
+    </div>
+
+    <!-- ── Category Breakdown ─────────────────────────── -->
+    <div class="section-card" *ngIf="categoryAnalysis.length > 0">
+      <div class="section-header">
+        <span class="section-title">
+          <mat-icon>pie_chart</mat-icon>
+          Category Breakdown
+        </span>
+      </div>
+      <div class="cat-breakdown-list">
+        <div class="cat-breakdown-row" *ngFor="let cat of categoryAnalysis">
+          <div class="cat-bd-icon">
+            <mat-icon>{{ cat.icon }}</mat-icon>
+          </div>
+          <div class="cat-bd-info">
+            <div class="cat-bd-top">
+              <span class="cat-bd-name">{{ cat.name }}</span>
+              <span class="cat-bd-amounts" [class.over]="cat.isOver" [class.near]="cat.isNear">
+                {{ cat.spent | currency }}
+                <span *ngIf="cat.limit" class="cat-bd-limit"> / {{ cat.limit | currency }}</span>
+                <span *ngIf="!cat.limit" class="cat-track-only">(tracking)</span>
+              </span>
+            </div>
+            <div class="cat-bd-bar-bg" *ngIf="cat.limit">
+              <div class="cat-bd-bar-fill"
+                [style.width.%]="cat.percent"
+                [class.warn]="cat.isNear"
+                [class.over]="cat.isOver">
+              </div>
+            </div>
+            <div class="cat-bd-bar-bg track-only" *ngIf="!cat.limit">
+              <div class="cat-bd-bar-fill track-only-fill" style="width: 100%"></div>
+            </div>
+          </div>
+          <div class="cat-bd-badge" *ngIf="cat.limit" [class.over]="cat.isOver" [class.near]="cat.isNear">
+            {{ cat.percent.toFixed(0) }}%
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ── Charts ─────────────────────────────────────────── -->
+  <div class="charts-grid">
+
+    <!-- Spend Distribution Donut -->
+    <div class="section-card chart-card">
+      <div class="section-header">
+        <span class="section-title">
+          <mat-icon>donut_large</mat-icon>
+          Spending Distribution
+        </span>
+      </div>
+      <div class="chart-wrap donut-wrap" *ngIf="totalSpent > 0; else noSpend">
+        <canvas #donutCanvas></canvas>
+      </div>
+      <ng-template #noSpend>
+        <div class="chart-empty">
+          <mat-icon>bar_chart</mat-icon>
+          <p>No spending data yet</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Daily Trend Bar Chart -->
+    <div class="section-card chart-card">
+      <div class="section-header">
+        <span class="section-title">
+          <mat-icon>show_chart</mat-icon>
+          Spend Over Time
+        </span>
+      </div>
+      <div class="chart-wrap" *ngIf="transactions.length > 0; else noTx">
+        <canvas #spendCanvas></canvas>
+      </div>
+      <ng-template #noTx>
+        <div class="chart-empty">
+          <mat-icon>timeline</mat-icon>
+          <p>No transactions to display</p>
+        </div>
+      </ng-template>
+    </div>
+
+  </div>
+
+  <!-- ── No Budget Empty State ──────────────────────────── -->
+  <div class="no-budget-state" *ngIf="!budget">
+    <div class="no-budget-icon">
+      <mat-icon>savings</mat-icon>
+    </div>
+    <h3>No Budget Configured</h3>
+    <p>Enable budget tracking on this sheet to see health scores, category limits, and spending insights.</p>
+  </div>
+
+</div>

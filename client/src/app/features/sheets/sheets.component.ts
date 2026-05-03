@@ -46,16 +46,16 @@ export class SheetsComponent {
   totalSent     = computed(() => Array.from(this.sheetTotals().values()).reduce((s, v) => s + v.sent, 0));
 
   openAddSheetDialog() {
-    this.dialog.open(AddSheetComponent, { width: '420px' }).afterClosed().subscribe(result => {
-      if (result) this.homeService.addSheet(result);
+    this.dialog.open(AddSheetComponent, { width: '600px' }).afterClosed().subscribe(result => {
+      if (result) this.homeService.addSheet(result.name, result.budget);
     });
   }
 
   editSheet(sheet: ExpenseSheet, event: Event) {
     event.stopPropagation();
     event.preventDefault();
-    this.dialog.open(AddSheetComponent, { width: '420px', data: { sheet } }).afterClosed().subscribe(result => {
-      if (result) this.homeService.updateSheet(sheet.id, result);
+    this.dialog.open(AddSheetComponent, { width: '600px', data: { sheet } }).afterClosed().subscribe(result => {
+      if (result) this.homeService.updateSheet(sheet.id, result.name, result.budget);
     });
   }
 }

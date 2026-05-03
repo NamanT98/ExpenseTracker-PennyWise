@@ -1,13 +1,162 @@
-<h2 mat-dialog-title>{{ isEditMode ? 'Edit' : 'Create New' }} Expense Sheet</h2>
-<mat-dialog-content>
-  <p *ngIf="!isEditMode">Please enter a name for your new expense sheet.</p>
-  <p *ngIf="isEditMode">Edit the name of your expense sheet.</p>
-  <mat-form-field appearance="outline" class="full-width">
-    <mat-label>Sheet Name</mat-label>
-    <input matInput [(ngModel)]="sheetName" placeholder="e.g. Monthly Groceries" (keyup.enter)="onSave()" autofocus>
-  </mat-form-field>
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>{{ isEditMode ? 'edit' : 'add_circle' }}</mat-icon>
+  {{ isEditMode ? 'Edit' : 'Create' }} Expense Sheet
+</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form [formGroup]="form" class="sheet-form">
+
+    <!-- Sheet Name -->
+    <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
+      <mat-label>Sheet Name</mat-label>
+      <mat-icon matPrefix>receipt_long</mat-icon>
+      <input matInput formControlName="name" placeholder="e.g. Monthly Groceries" (keyup.enter)="onSave()" autofocus>
+    </mat-form-field>
+
+    <!-- Budget Toggle -->
+    <div class="budget-toggle-row">
+      <div class="toggle-label-group">
+        <mat-icon class="toggle-icon">account_balance_wallet</mat-icon>
+        <div>
+          <div class="toggle-title">Enable Budget Tracking</div>
+          <div class="toggle-sub">Set limits and track spending by category</div>
+        </div>
+      </div>
+      <mat-slide-toggle formControlName="enableBudget" color="primary"></mat-slide-toggle>
+    </div>
+
+    <!-- Budget Section (Progressive Disclosure) -->
+    <div class="budget-section" [class.visible]="enableBudget">
+      <div class="budget-inner" *ngIf="enableBudget">
+
+        <!-- Quick Start Templates -->
+        <div class="quick-start">
+          <span class="qs-label">Quick Start:</span>
+          <div class="qs-chips">
+            <button type="button" class="qs-chip" (click)="applyTemplate('vacation')">
+              <mat-icon>beach_access</mat-icon> Vacation
+            </button>
+            <button type="button" class="qs-chip" (click)="applyTemplate('monthly')">
+              <mat-icon>calendar_month</mat-icon> Monthly Budget
+            </button>
+            <button type="button" class="qs-chip" (click)="applyTemplate('business')">
+              <mat-icon>work</mat-icon> Business Trip
+            </button>
+          </div>
+        </div>
+
+        <!-- Global Budget + Frequency -->
+        <div class="global-row">
+          <mat-form-field appearance="outline" class="limit-field" subscriptSizing="dynamic">
+            <mat-label>Total Budget Limit</mat-label>
+            <span matTextPrefix>$&nbsp;</span>
+            <input matInput type="number" formControlName="globalLimit" placeholder="0.00" min="0">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="freq-field" subscriptSizing="dynamic">
+            <mat-label>Frequency</mat-label>
+            <mat-select formControlName="frequency">
+              <mat-option value="one-time">One-time / Total</mat-option>
+              <mat-option value="weekly">Weekly</mat-option>
+              <mat-option value="monthly">Monthly</mat-option>
+              <mat-option value="yearly">Yearly</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Frequency Hint -->
+        <div class="freq-hint" *ngIf="getFrequencyHint()">
+          <mat-icon>info</mat-icon>
+          {{ getFrequencyHint() }}
+        </div>
+
+        <!-- Smart Tracker -->
+        <div class="smart-tracker" *ngIf="globalLimit > 0" (click)="_tick.set(_tick() + 1)">
+          <div class="tracker-header">
+            <span class="tracker-label">Allocated</span>
+            <span class="tracker-amounts" [class.over]="isOverBudget()" [class.warn]="isNearBudget()">
+              {{ getAllocatedTotal() | currency }} of {{ globalLimit | currency }}
+            </span>
+          </div>
+          <div class="tracker-bar-bg">
+            <div class="tracker-bar-fill"
+              [style.width.%]="getAllocatedPercent()"
+              [class.warn]="isNearBudget()"
+              [class.over]="isOverBudget()">
+            </div>
+          </div>
+          <div class="tracker-warning" *ngIf="isOverBudget()">
+            <mat-icon>warning</mat-icon>
+            Category budgets exceed your global limit by {{ getAllocatedTotal() - globalLimit | currency }}
+          </div>
+        </div>
+
+        <!-- Category List Header -->
+        <div class="cat-list-header">
+          <span class="cat-list-title">Category Breakdown</span>
+          <button type="button" mat-stroked-button class="add-cat-btn" (click)="addCategory()">
+            <mat-icon>add</mat-icon> Add Category
+          </button>
+        </div>
+
+        <!-- Category Rows -->
+        <div class="cat-list" formArrayName="categories">
+          <!-- Empty State -->
+          <div class="cat-empty" *ngIf="categoriesArray.length === 0">
+            <mat-icon>category</mat-icon>
+            <p>No categories yet. Add <strong>Food</strong> or <strong>Travel</strong> to start tracking.</p>
+          </div>
+
+          <div class="cat-row" *ngFor="let row of categoriesArray.controls; let i = index" [formGroupName]="i">
+
+            <!-- Icon Picker Trigger -->
+            <div class="cat-icon-wrap">
+              <button type="button" class="icon-trigger" [matMenuTriggerFor]="iconMenu" matTooltip="Pick icon">
+                <mat-icon>{{ row.get('icon')?.value || 'payments' }}</mat-icon>
+              </button>
+              <!-- Icon Picker Menu -->
+              <mat-menu #iconMenu="matMenu" class="icon-picker-menu" xPosition="after">
+                <div class="icon-grid">
+                  <button type="button" class="icon-opt"
+                    *ngFor="let ico of iconPalette"
+                    (click)="selectIcon(i, ico)"
+                    [class.selected]="row.get('icon')?.value === ico"
+                    [matTooltip]="ico">
+                    <mat-icon>{{ ico }}</mat-icon>
+                  </button>
+                </div>
+              </mat-menu>
+            </div>
+
+            <!-- Category Name -->
+            <mat-form-field appearance="outline" class="cat-name-field" subscriptSizing="dynamic">
+              <input matInput formControlName="name" placeholder="Category name">
+            </mat-form-field>
+
+            <!-- Category Limit -->
+            <mat-form-field appearance="outline" class="cat-limit-field" subscriptSizing="dynamic">
+              <span matTextPrefix>$&nbsp;</span>
+              <input matInput type="number" formControlName="limit" placeholder="No limit"
+                (input)="_tick.set(_tick() + 1)">
+            </mat-form-field>
+
+            <!-- Delete -->
+            <button type="button" mat-icon-button class="cat-delete" (click)="removeCategory(i)" matTooltip="Remove">
+              <mat-icon>delete</mat-icon>
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="!sheetName.trim()" (click)="onSave()">{{ isEditMode ? 'Save' : 'Create' }}</button>
+  <button mat-raised-button color="primary" [disabled]="!form.get('name')?.value?.trim()" (click)="onSave()">
+    {{ isEditMode ? 'Save Changes' : 'Create Sheet' }}
+  </button>
 </mat-dialog-actions>

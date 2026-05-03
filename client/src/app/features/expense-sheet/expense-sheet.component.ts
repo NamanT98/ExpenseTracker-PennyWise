@@ -1,15 +1,19 @@
-import { Component, inject, OnInit, computed } from '@angular/core';
+import { Component, inject, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { ExpenseSheetService } from './expense-sheet.service';
 import { HomeService } from '../home/home.service';
-import { DATE_RANGES, CATEGORIES, CATEGORY_ICONS } from './constants';
+import { getDateRangesForFrequency, CATEGORIES, CATEGORY_ICONS } from './constants';
 import { DateRange, Transaction, DayGroup } from './models';
+import { SheetBudget } from '../home/models';
 import { AddTransactionComponent } from '../../shared/dialogs/add-transaction/add-transaction.component';
+import { AnalysisComponent } from './analysis/analysis.component';
 
 
 
@@ -18,25 +22,41 @@ import { AddTransactionComponent } from '../../shared/dialogs/add-transaction/ad
   standalone: true,
   imports: [
     CommonModule, RouterModule, MatButtonModule, MatIconModule,
-    MatDialogModule, MatTooltipModule
+    MatDialogModule, MatTooltipModule, MatTabsModule, MatMenuModule, AnalysisComponent
   ],
   templateUrl: './expense-sheet.component.html',
   styleUrl: './expense-sheet.component.scss'
 })
 export class ExpenseSheetComponent implements OnInit {
   route = inject(ActivatedRoute);
+  router = inject(Router);
   expenseSheetService = inject(ExpenseSheetService);
   homeService = inject(HomeService);
   dialog = inject(MatDialog);
 
-  dateRanges = DATE_RANGES;
-  categories = CATEGORIES;
   sheetId: string | null = null;
   sheetName = '';
+  sheetBudget = signal<SheetBudget | undefined>(undefined);
+  sheetCreatedAt = signal<string | undefined>(undefined);
+
+  dateRanges = computed(() => {
+    return getDateRangesForFrequency(this.sheetBudget()?.frequency);
+  });
 
   transactions   = this.expenseSheetService.filteredTransactions;
+  allTransactions = this.expenseSheetService.sheetTransactions; // unfiltered, for analysis
   selectedRange  = this.expenseSheetService.selectedDateRange;
   selectedCategory = this.expenseSheetService.selectedCategory;
+
+  categories = computed(() => {
+    const sheetId = this.expenseSheetService.selectedSheetId();
+    const sheet = this.homeService.sheets().find(s => s.id === sheetId);
+    const customCats = sheet?.categories || [];
+    const budgetCats = this.sheetBudget()?.categories.map(c => c.name.toLowerCase()) || [];
+    const txCats = this.allTransactions().map(t => t.category.toLowerCase());
+    if (customCats.length === 0 && budgetCats.length === 0 && txCats.length === 0) return CATEGORIES;
+    return Array.from(new Set([...customCats, ...budgetCats, ...txCats]));
+  });
 
   // Grouped by date — Money Lover pattern
   groupedTransactions = computed<DayGroup[]>(() => {
@@ -69,7 +89,13 @@ export class ExpenseSheetComponent implements OnInit {
       if (this.sheetId) {
         this.expenseSheetService.setSheetId(this.sheetId);
         const sheet = this.homeService.sheets().find(s => s.id === this.sheetId);
-        this.sheetName = sheet?.name ?? 'Sheet';
+        if (!sheet) {
+          this.router.navigate(['/']);
+          return;
+        }
+        this.sheetName   = sheet.name;
+        this.sheetBudget.set(sheet.budget);
+        this.sheetCreatedAt.set(sheet.createdAt);
       }
     });
   }
@@ -77,17 +103,29 @@ export class ExpenseSheetComponent implements OnInit {
   onDateRangeChange(range: DateRange) { this.expenseSheetService.setDateRange(range); }
   onCategoryChange(cat: string)       { this.expenseSheetService.setCategory(cat); }
 
+  getSelectedRangeLabel(): string {
+    const range = this.selectedRange();
+    const found = this.dateRanges().find(r => r.value === range);
+    return found ? found.label : 'Select Period';
+  }
+
   openAddTransactionDialog() {
     if (!this.sheetId) return;
-    this.dialog.open(AddTransactionComponent, { width: '500px', data: { sheetId: this.sheetId } })
+    const sheet = this.homeService.sheets().find(s => s.id === this.sheetId);
+    this.dialog.open(AddTransactionComponent, { width: '500px', data: { sheetId: this.sheetId, sheetBudget: this.sheetBudget(), sheet } })
       .afterClosed().subscribe(r => { if (r) this.expenseSheetService.addTransaction(r); });
   }
 
   editTransaction(t: Transaction, event: Event) {
     event.stopPropagation();
     if (!this.sheetId) return;
-    this.dialog.open(AddTransactionComponent, { width: '500px', data: { sheetId: this.sheetId, transaction: t } })
+    this.dialog.open(AddTransactionComponent, { width: '500px', data: { sheetId: this.sheetId, transaction: t, sheetBudget: this.sheetBudget() } })
       .afterClosed().subscribe(r => { if (r) this.expenseSheetService.updateTransaction(t.id, r); });
+  }
+
+  deleteTransaction(t: Transaction, event: Event) {
+    event.stopPropagation();
+    this.expenseSheetService.deleteTransaction(t.id);
   }
 
   getCategoryIcon(cat: string): string {

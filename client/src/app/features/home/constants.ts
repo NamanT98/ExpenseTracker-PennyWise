@@ -3,9 +3,40 @@ import { ExpenseSheet } from './models';
 export const APP_NAME = 'PennyWise';
 
 export const MOCK_EXPENSE_SHEETS: ExpenseSheet[] = [
-  { id: '1', name: 'Personal Expenses', createdAt: new Date().toISOString() },
+  {
+    id: '1',
+    name: 'Personal Expenses',
+    createdAt: new Date().toISOString(),
+    budget: {
+      globalLimit: 3000,
+      frequency: 'monthly',
+      categories: [
+        { id: 'c1', icon: 'restaurant', name: 'Food & Dining', limit: 600 },
+        { id: 'c2', icon: 'flight', name: 'Travel', limit: 400 },
+        { id: 'c3', icon: 'checkroom', name: 'Fashion', limit: 300 },
+        { id: 'c4', icon: 'bolt', name: 'Electricity Bills', limit: 200 },
+        { id: 'c5', icon: 'home', name: 'Rent', limit: 1200 },
+        { id: 'c6', icon: 'more_horiz', name: 'Miscellaneous', limit: 300 },
+      ]
+    }
+  },
   { id: '2', name: 'Office Work', createdAt: new Date(Date.now() - 86400000).toISOString() },
-  { id: '3', name: 'Trip to Hawaii', createdAt: new Date(Date.now() - 86400000 * 5).toISOString() },
+  {
+    id: '3',
+    name: 'Trip to Hawaii',
+    createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    budget: {
+      globalLimit: 5000,
+      frequency: 'one-time',
+      categories: [
+        { id: 'h1', icon: 'flight', name: 'Flights', limit: 1500 },
+        { id: 'h2', icon: 'hotel', name: 'Accommodation', limit: 1800 },
+        { id: 'h3', icon: 'restaurant', name: 'Food', limit: 700 },
+        { id: 'h4', icon: 'attractions', name: 'Activities', limit: 600 },
+        { id: 'h5', icon: 'shopping_bag', name: 'Shopping', limit: null },
+      ]
+    }
+  },
 ];
 
 export const TESTIMONIALS = [
