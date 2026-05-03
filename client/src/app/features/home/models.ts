@@ -18,7 +18,6 @@ export interface ExpenseSheet {
   name: string;
   createdAt: string;
   budget?: SheetBudget;
-  categories?: string[];
 }
 
 export interface Testimonial {

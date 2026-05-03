@@ -25,18 +25,4 @@ export class HomeService {
       sheets.map(s => s.id === id ? { ...s, name, budget } : s)
     );
   }
-
-  addCategoryToSheet(id: string, category: string) {
-    this.sheetsSignal.update(sheets =>
-      sheets.map(s => {
-        if (s.id === id) {
-          const currentCats = s.categories || [];
-          if (!currentCats.includes(category)) {
-            return { ...s, categories: [...currentCats, category] };
-          }
-        }
-        return s;
-      })
-    );
-  }
 }

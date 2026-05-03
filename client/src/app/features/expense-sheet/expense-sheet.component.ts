@@ -49,13 +49,9 @@ export class ExpenseSheetComponent implements OnInit {
   selectedCategory = this.expenseSheetService.selectedCategory;
 
   categories = computed(() => {
-    const sheetId = this.expenseSheetService.selectedSheetId();
-    const sheet = this.homeService.sheets().find(s => s.id === sheetId);
-    const customCats = sheet?.categories || [];
     const budgetCats = this.sheetBudget()?.categories.map(c => c.name.toLowerCase()) || [];
-    const txCats = this.allTransactions().map(t => t.category.toLowerCase());
-    if (customCats.length === 0 && budgetCats.length === 0 && txCats.length === 0) return CATEGORIES;
-    return Array.from(new Set([...customCats, ...budgetCats, ...txCats]));
+    if (budgetCats.length > 0) return budgetCats;
+    return CATEGORIES;
   });
 
   // Grouped by date — Money Lover pattern

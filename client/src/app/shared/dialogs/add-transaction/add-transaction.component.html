@@ -24,30 +24,14 @@
       <span matTextPrefix>$&nbsp;</span>
     </mat-form-field>
 
-    <div class="category-field-row">
-      <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic" *ngIf="!showNewCategoryInput">
-        <mat-label>Category</mat-label>
-        <mat-select formControlName="category">
-          <mat-option *ngFor="let cat of categories" [value]="cat">
-            {{ cat | titlecase }}
-          </mat-option>
-          <mat-option value="NEW_CATEGORY">
-            <mat-icon>add</mat-icon> Create New Category
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic" *ngIf="showNewCategoryInput">
-        <mat-label>New Category Name</mat-label>
-        <input matInput [formControl]="newCategoryControl" placeholder="e.g. Subscriptions">
-        <button mat-icon-button matSuffix type="button" (click)="addNewCategory($event)">
-          <mat-icon>check</mat-icon>
-        </button>
-        <button mat-icon-button matSuffix type="button" (click)="toggleNewCategory()">
-          <mat-icon>close</mat-icon>
-        </button>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let cat of categories" [value]="cat">
+          {{ cat | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
     <mat-form-field appearance="outline" class="full-width" subscriptSizing="dynamic">
       <mat-label>Summary (Optional)</mat-label>
